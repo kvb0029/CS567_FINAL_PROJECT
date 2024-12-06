@@ -33,6 +33,54 @@ class CarAuctionSystem:
         self.logged_in_user = None
         self.cars = []
 
+    def cancel_listing(self, car_name):
+        if not self.logged_in_user:
+            print("You must log in to cancel a listing.")
+            return
+        for car in self.cars:
+            if car.name == car_name and car.seller == self.logged_in_user:
+                if car.bids:
+                    print("You cannot cancel the listing because there are already bids.")
+                    return
+                self.cars.remove(car)
+                self.logged_in_user.listed_cars.remove(car)
+                print(f"Listing for '{car_name}' has been successfully canceled.")
+                return
+        print("Car not found or you do not have permission to cancel this listing.")
+
+    def view_my_listings(self):
+        if not self.logged_in_user:
+            print("You must log in to view your listings.")
+            return
+        print(f"\n=== Listings by {self.logged_in_user.username} ===")
+        if not self.logged_in_user.listed_cars:
+            print("You have not listed any cars.")
+            return
+        for car in self.logged_in_user.listed_cars:
+            print(f"Car: {car.name}, Description: {car.description}, Minimum Price: {car.min_price}, Ends: {car.end_time}")
+        print()
+
+    def extend_auction(self, car_name, extra_minutes):
+        if not self.logged_in_user:
+            print("You must log in to extend an auction.")
+            return
+        for car in self.cars:
+            if car.name == car_name and car.seller == self.logged_in_user:
+                car.end_time += datetime.timedelta(minutes=extra_minutes)
+                print(f"The auction for '{car_name}' has been extended by {extra_minutes} minutes.")
+                return
+        print("Car not found or you do not have permission to extend this auction.")
+
+    def generate_report(self):
+        print("\n=== Auction Report ===")
+        total_sales = 0
+        for car in self.cars:
+            if car.highest_bid:
+                total_sales += car.highest_bid.amount
+                print(f"Car: {car.name}, Sold to: {car.winner.username}, Price: {car.highest_bid.amount}")
+        print(f"Total Sales: {total_sales}")
+        print()
+
     def register_user(self, username, password):
         if username in self.users:
             print("Username already exists. Please choose a different username.")
