@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime, timedelta
-
+from CAS import CarAuctionSystem
 class TestCarAuctionSystem(unittest.TestCase):
 
     def setUp(self):
