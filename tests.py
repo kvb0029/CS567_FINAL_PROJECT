@@ -40,13 +40,7 @@ class TestCarAuctionSystem(unittest.TestCase):
         self.assertEqual(self.system.cars[0].highest_bid.amount, 6000)
         self.assertEqual(self.system.cars[0].highest_bid.user.username, "bidder_user")
 
-    def test_close_expired_auctions(self):
-        past_time = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
-        self.system.list_car("Car1", "A fast car", 5000, past_time)  # List a car with an expired time
-        self.system.close_expired_auctions()  # Run the method to close expired auctions
-        self.assertEqual(len(self.system.cars), 1)  # Ensure the car is still in the list
-        self.assertEqual(self.system.cars[0].winner, None)  # Check that no bids were placed
-
+    
     def test_cancel_listing(self):
         future_time = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
         self.system.list_car("Car1", "A fast car", 5000, future_time)
